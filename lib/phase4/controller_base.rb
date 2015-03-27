@@ -11,6 +11,7 @@ module Phase4
 
     # method exposing a `Session` object
     def session
+      @session ||= JSON.parse(req)
     end
   end
 end
