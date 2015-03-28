@@ -36,8 +36,18 @@ module Phase5
     def parse_www_encoded_form(www_encoded_form)
       ary = URI::decode_www_form(www_encoded_form)
       hash = {}
-      ary.each do |nested_ary|
-        hash[nested_ary[0]] = nested_ary[1]
+      ary.each do |full_key, val|
+        scope = hash
+        parsed_key = parse_key(full_key)
+
+        parsed_key.each_with_index do |key, idx|
+          if (idx + 1) == parsed_key.size
+            scope[key] = val
+          else
+            scope[key] ||= {}
+            scope = scope[key]
+          end
+        end
       end
 
       hash
@@ -46,6 +56,7 @@ module Phase5
     # this should return an array
     # user[address][street] should return ['user', 'address', 'street']
     def parse_key(key)
+      key.split(/\]\[|\[|\]/)
     end
   end
 end
